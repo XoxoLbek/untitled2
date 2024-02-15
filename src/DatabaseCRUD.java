@@ -24,7 +24,7 @@ public class DatabaseCRUD {
                 System.out.println("5. Выйти");
                 System.out.print("Ваш выбор: ");
                 int choice = scanner.nextInt();
-                scanner.nextLine(); // consume newline
+                scanner.nextLine();
 
                 switch (choice) {
                     case 1:
@@ -72,7 +72,7 @@ public class DatabaseCRUD {
     private static void readRecord(Connection connection, Scanner scanner) throws SQLException {
         System.out.print("Введите ID записи для чтения: ");
         int id = scanner.nextInt();
-        scanner.nextLine(); // consume newline
+        scanner.nextLine();
 
         String sql = "SELECT * FROM my_table WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -92,14 +92,14 @@ public class DatabaseCRUD {
     private static void updateRecord(Connection connection, Scanner scanner) throws SQLException {
         System.out.print("Введите ID записи для обновления: ");
         int id = scanner.nextInt();
-        scanner.nextLine(); // consume newline
+        scanner.nextLine();
 
         System.out.println("Введите новые данные:");
         System.out.print("Имя: ");
         String name = scanner.nextLine();
         System.out.print("Возраст: ");
         int age = scanner.nextInt();
-        scanner.nextLine(); // consume newline
+        scanner.nextLine();
 
         String sql = "UPDATE my_table SET name = ?, age = ? WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -118,7 +118,7 @@ public class DatabaseCRUD {
     private static void deleteRecord(Connection connection, Scanner scanner) throws SQLException {
         System.out.print("Введите ID записи для удаления: ");
         int id = scanner.nextInt();
-        scanner.nextLine(); // consume newline
+        scanner.nextLine();
 
         String sql = "DELETE FROM my_table WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
