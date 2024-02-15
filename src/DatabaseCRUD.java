@@ -3,7 +3,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Scanner; 
+import java.util.Scanner;
 
 public class DatabaseCRUD {
 
@@ -16,13 +16,13 @@ public class DatabaseCRUD {
             Scanner scanner = new Scanner(System.in);
             boolean exit = false;
             while (!exit) {
-                System.out.println("Выберите операцию:");
-                System.out.println("1. Создать запись");
-                System.out.println("2. Прочитать запись");
-                System.out.println("3. Обновить запись");
-                System.out.println("4. Удалить запись");
-                System.out.println("5. Выйти");
-                System.out.print("Ваш выбор: ");
+                System.out.println("Choose operation:");
+                System.out.println("1. Create record");
+                System.out.println("2. Read record");
+                System.out.println("3. Update record");
+                System.out.println("4. Delete record");
+                System.out.println("5. Exit");
+                System.out.print("Your choice: ");
                 int choice = scanner.nextInt();
                 scanner.nextLine();
 
@@ -43,91 +43,102 @@ public class DatabaseCRUD {
                         exit = true;
                         break;
                     default:
-                        System.out.println("Неверный выбор. Попробуйте снова.");
+                        System.out.println("Invalid choice. Please try again.");
                 }
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     private static void createRecord(Connection connection, Scanner scanner) throws SQLException {
-        System.out.println("Введите данные для создания записи:");
-        System.out.print("Имя: ");
+        System.out.println("Enter data to create record:");
+        System.out.print("Apartment number: ");
+        int apartmentNumber = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Name: ");
         String name = scanner.nextLine();
-        System.out.print("Возраст: ");
+        System.out.print("Age: ");
         int age = scanner.nextInt();
         scanner.nextLine();
+        System.out.print("Phone number: ");
+        String phoneNumber = scanner.nextLine();
 
-        String sql = "INSERT INTO my_table (name, age) VALUES (?, ?)";
+        String sql = "INSERT INTO my_table (apartment_number, name, age, phone_number) VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, name);
-            statement.setInt(2, age);
+            statement.setInt(1, apartmentNumber);
+            statement.setString(2, name);
+            statement.setInt(3, age);
+            statement.setString(4, phoneNumber);
             statement.executeUpdate();
-            System.out.println("Запись успешно создана.");
+            System.out.println("Record created successfully.");
         }
     }
 
     private static void readRecord(Connection connection, Scanner scanner) throws SQLException {
-        System.out.print("Введите ID записи для чтения: ");
-        int id = scanner.nextInt();
+        System.out.print("Enter apartment number to read: ");
+        int apartmentNumber = scanner.nextInt();
         scanner.nextLine();
 
-        String sql = "SELECT * FROM my_table WHERE id = ?";
+        String sql = "SELECT * FROM my_table WHERE apartment_number = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, id);
+            statement.setInt(1, apartmentNumber);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
+                    int id = resultSet.getInt("id");
                     String name = resultSet.getString("name");
                     int age = resultSet.getInt("age");
-                    System.out.println("ID: " + id + ", Имя: " + name + ", Возраст: " + age);
+                    String phoneNumber = resultSet.getString("phone_number");
+                    System.out.println("ID: " + id + ", Apartment number: " + apartmentNumber + ", Name: " + name + ", Age: " + age + ", Phone number: " + phoneNumber);
                 } else {
-                    System.out.println("Запись с указанным ID не найдена.");
+                    System.out.println("Records not found for the specified apartment.");
                 }
             }
         }
     }
 
     private static void updateRecord(Connection connection, Scanner scanner) throws SQLException {
-        System.out.print("Введите ID записи для обновления: ");
-        int id = scanner.nextInt();
+        System.out.print("Enter apartment number to update: ");
+        int apartmentNumber = scanner.nextInt();
         scanner.nextLine();
 
-        System.out.println("Введите новые данные:");
-        System.out.print("Имя: ");
+        System.out.println("Enter new data:");
+        System.out.print("Name: ");
         String name = scanner.nextLine();
-        System.out.print("Возраст: ");
+        System.out.print("Age: ");
         int age = scanner.nextInt();
         scanner.nextLine();
+        System.out.print("Phone number: ");
+        String phoneNumber = scanner.nextLine();
 
-        String sql = "UPDATE my_table SET name = ?, age = ? WHERE id = ?";
+        String sql = "UPDATE my_table SET name = ?, age = ?, phone_number = ? WHERE apartment_number = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, name);
             statement.setInt(2, age);
-            statement.setInt(3, id);
+            statement.setString(3, phoneNumber);
+            statement.setInt(4, apartmentNumber);
             int rowsUpdated = statement.executeUpdate();
             if (rowsUpdated > 0) {
-                System.out.println("Запись успешно обновлена.");
+                System.out.println("Record updated successfully.");
             } else {
-                System.out.println("Запись с указанным ID не найдена.");
+                System.out.println("Records not found for the specified apartment.");
             }
         }
     }
 
     private static void deleteRecord(Connection connection, Scanner scanner) throws SQLException {
-        System.out.print("Введите ID записи для удаления: ");
-        int id = scanner.nextInt();
+        System.out.print("Enter apartment number to delete: ");
+        int apartmentNumber = scanner.nextInt();
         scanner.nextLine();
 
-        String sql = "DELETE FROM my_table WHERE id = ?";
+        String sql = "DELETE FROM my_table WHERE apartment_number = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, id);
+            statement.setInt(1, apartmentNumber);
             int rowsDeleted = statement.executeUpdate();
             if (rowsDeleted > 0) {
-                System.out.println("Запись успешно удалена.");
+                System.out.println("Records deleted successfully.");
             } else {
-                System.out.println("Запись с указанным ID не найдена.");
+                System.out.println("Records not found for the specified apartment.");
             }
         }
     }
